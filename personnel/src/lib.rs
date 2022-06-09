@@ -75,4 +75,29 @@ impl Candidate {
             })
             .collect() // Collect the candidates into a vector
     }
+
+    // Returns the job code of an AstronautJob
+    fn job_code(job: &AstronautJob) -> u32 {
+        match job {
+            AstronautJob::Biogeochemist => 251,
+            AstronautJob::Biologist => 257,
+            AstronautJob::Engineer => 263,
+            AstronautJob::Geologist => 269,
+            AstronautJob::Mechanic => 271,
+            AstronautJob::Medic => 277,
+            AstronautJob::RoverOp => 281,
+            AstronautJob::Scientist => 283,
+        }
+    }
+
+    // Calculates the score of a candidate
+    pub fn candidate_score(&self) -> u32 {
+        (((match &self.secondary_job {
+            Some(job) => Self::job_code(job) * Self::job_code(&self.primary_job),
+            None => Self::job_code(&self.primary_job) * Self::job_code(&self.primary_job),
+        } % 577)
+            + self.health as u32)
+            * self.age as u32)
+            % 3929
+    }
 }
